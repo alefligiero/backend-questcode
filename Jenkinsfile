@@ -17,7 +17,7 @@ podTemplate(cloud: 'kubernetes',
     def HELM_CHART_NAME = "questcode/backend-user"
     def HELM_DEPLOY_NAME
     def CHARTMUSEUM_URL = "http://my-chartmuseum:8080"
-    def NODE_PORT = "30020"
+    def NODE_PORT = "30022"
 
     node('questcode') {
         stage('Checkout') {
@@ -29,7 +29,7 @@ podTemplate(cloud: 'kubernetes',
             } else if (GIT_BRANCH.equals("develop")) {
                 KUBE_NAMESPACE = "staging"
                 IMAGE_POSFIX = "-RC"
-                NODE_PORT = "31020"
+                NODE_PORT = "30020"
             } else {
                 def error = "Não existe pipeline para a branch ${GIT_BRANCH}"
                 echo error
