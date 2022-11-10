@@ -1,5 +1,3 @@
-def LABEL_ID = "questcode-${UUID.randomUUID().toString()}"
-
 podTemplate(cloud: 'kubernetes', 
     containers: [
         containerTemplate(args: 'cat', command: '/bin/sh -c', image: 'docker', name: 'docker-container', ttyEnabled: true),
@@ -21,7 +19,7 @@ podTemplate(cloud: 'kubernetes',
     def CHARTMUSEUM_URL = "http://my-chartmuseum:8080"
     def NODE_PORT = "30020"
 
-    node (LABEL_ID) {
+    node ('questcode') {
         
         stage('Checkout') {
             echo 'Iniciando clone do repositório'
@@ -53,7 +51,6 @@ podTemplate(cloud: 'kubernetes',
             }
             
         }
-
         stage('Deploy') {
             container('helm-container'){
                 echo 'Iniciando Deploy com Helm'
