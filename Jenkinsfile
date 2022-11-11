@@ -62,8 +62,7 @@ podTemplate(cloud: 'kubernetes',
                 } catch(Exception e) {
                     sh "helm install ${HELM_DEPLOY_NAME} ${HELM_CHART_NAME} -n ${KUBE_NAMESPACE} -set ingress.host[0]=${INGRESS_HOST}"
                 }
-            }
-            
+            }         
         }
     }
 }
