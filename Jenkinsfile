@@ -17,10 +17,9 @@ podTemplate(cloud: 'kubernetes',
     def HELM_CHART_NAME = "questcode/backend-user"
     def HELM_DEPLOY_NAME
     def CHARTMUSEUM_URL = "http://my-chartmuseum:8080"
-    def NODE_PORT = "30022"
+    def INGRESS_HOST = "questcode.org"
 
-    node ('questcode') {
-        
+    node('questcode') {
         stage('Checkout') {
             echo 'Iniciando clone do repositório'
             REPOS = checkout scm
@@ -30,7 +29,7 @@ podTemplate(cloud: 'kubernetes',
             } else if (GIT_BRANCH.equals("develop")) {
                 KUBE_NAMESPACE = "staging"
                 IMAGE_POSFIX = "-RC"
-                NODE_PORT = "30020"
+                INGRESS_HOST = "staging.questcode.org"
             } else {
                 def error = "Não existe pipeline para a branch ${GIT_BRANCH}"
                 echo error
@@ -59,9 +58,9 @@ podTemplate(cloud: 'kubernetes',
                 sh 'helm search repo questcode'
                 sh 'helm repo update'
                 try {
-                    sh "helm upgrade ${HELM_DEPLOY_NAME} ${HELM_CHART_NAME} --set image.tag=${IMAGE_VERSION} -n ${KUBE_NAMESPACE} --set service.nodePort=${NODE_PORT}"
+                    sh "helm upgrade ${HELM_DEPLOY_NAME} ${HELM_CHART_NAME} --set image.tag=${IMAGE_VERSION} -n ${KUBE_NAMESPACE} --set ingress.host[0]=${INGRESS_HOST}"
                 } catch(Exception e) {
-                    sh "helm install ${HELM_DEPLOY_NAME} ${HELM_CHART_NAME} -n ${KUBE_NAMESPACE} --set service.nodePort=${NODE_PORT}"
+                    sh "helm install ${HELM_DEPLOY_NAME} ${HELM_CHART_NAME} -n ${KUBE_NAMESPACE} -set ingress.host[0]=${INGRESS_HOST}"
                 }
             }
             
